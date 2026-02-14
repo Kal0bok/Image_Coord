@@ -408,4 +408,24 @@ private Point screenToWorld(Point p) {
     return new Point((int)((p.x - offsetX) / zoomFactor), (int)((p.y - offsetY) / zoomFactor));
 }
 
+private void updateList() {
+    listModel.clear();
+    for (ShapeData s : shapes) {
+        Rectangle r = s.getRect();
+        String type = s.type.equals("OVAL") ? "circle" : (s.type.equals("RHOMBUS") ? "poly" : "rect");
+        String c = type.equals("circle") ? (r.x+r.width/2)+","+(r.y+r.height/2)+","+(r.width/2) :
+                   (type.equals("rect") ? r.x+","+r.y+","+(r.x+r.width)+","+(r.y+r.height) : 
+                   (r.x+r.width/2)+","+r.y+","+(r.x+r.width)+","+(r.y+r.height/2)+","+(r.x+r.width/2)+","+(r.y+r.height)+","+r.x+","+(r.y+r.height/2));
+        s.tag = "<area shape=\""+type+"\" coords=\""+c+"\" href=\"#\">";
+        listModel.addElement(s.tag);
+    }
+}
+
+private void copyToClipboard() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < listModel.size(); i++) sb.append(listModel.getElementAt(i)).append("\n");
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(sb.toString()), null);
+    JOptionPane.showMessageDialog(this, "Copied!");
+}
+
 }
