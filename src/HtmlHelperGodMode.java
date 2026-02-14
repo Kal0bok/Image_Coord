@@ -467,4 +467,7 @@ static class ShapeData {
     }
 }
 
+public static void main(String[] args) {
+    SwingUtilities.invokeLater(() -> new HtmlHelperGodMode().setVisible(true));
+}
 }
