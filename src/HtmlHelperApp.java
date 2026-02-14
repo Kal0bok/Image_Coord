@@ -45,10 +45,7 @@ public class HtmlHelperGodMode extends JFrame {
     }
     
     private void styleDarkButton(JButton b) {  }
-    
-    /* * Section 2: File I/O and Viewport logic.
-     * Manages image loading, scaling (zoom), and panning (offset).
-     */
+
     private void setupDragAndDrop(JPanel panel) {
     }
 
@@ -60,5 +57,27 @@ public class HtmlHelperGodMode extends JFrame {
 
     private Point screenToWorld(Point p) {
         return new Point((int)((p.x - offsetX) / zoomFactor), (int)((p.y - offsetY) / zoomFactor));
+    }
+    
+    /* * Section 3: Geometry and Rendering.
+     * Internal class to store coordinates and logic for different area types.
+     */
+    static class ShapeData {
+        String type, tag; Point p1, p2;
+        ShapeData(String t, Point p1, Point p2) { this.type = t; this.p1 = new Point(p1); this.p2 = new Point(p2); }
+        
+        Rectangle getRect() { 
+            return new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y), 
+                                 Math.max(1, Math.abs(p1.x - p2.x)), Math.max(1, Math.abs(p1.y - p2.y))); 
+        }
+
+        boolean contains(Point p) {
+            Rectangle r = getRect();
+            if (type.equals("OVAL")) return new Ellipse2D.Double(r.x, r.y, r.width, r.height).contains(p);
+            return r.contains(p);
+        }
+    }
+
+    private void drawShape(Graphics2D g2, ShapeData s, boolean selected) {
     }
 }
