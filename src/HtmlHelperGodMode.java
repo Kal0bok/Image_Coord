@@ -338,4 +338,16 @@ private void drawShape(Graphics2D g2, ShapeData s, boolean selected) {
     }
 }
 
+private void constrainOffsets() {
+    if (img == null) return;
+    int viewW = getContentPane().getWidth() - 180 - 320;
+    int viewH = getContentPane().getHeight() - 60;
+    int imgW = (int)(img.getWidth() * zoomFactor);
+    int imgH = (int)(img.getHeight() * zoomFactor);
+    if (imgW < viewW) offsetX = (viewW - imgW) / 2;
+    else offsetX = Math.min(0, Math.max(offsetX, viewW - imgW));
+    if (imgH < viewH) offsetY = (viewH - imgH) / 2;
+    else offsetY = Math.min(0, Math.max(offsetY, viewH - imgH));
+}
+
 }
