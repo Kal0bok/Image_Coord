@@ -107,10 +107,54 @@ public class HtmlHelperGodMode extends JFrame {
 
      add(sidebar, BorderLayout.WEST);
      add(topPanel, BorderLayout.NORTH);
-
-        
-        
-        
+     
     }
+    
+ // Styles dark UI buttons
+    private void styleDarkButton(JButton b) {
+        b.setContentAreaFilled(false);
+        b.setOpaque(true);
+        b.setBackground(BTN_COLOR);
+        b.setForeground(Color.WHITE);
+        b.setFocusPainted(false);
+        b.setBorder(new LineBorder(Color.BLACK, 1));
+
+        // Hover effect
+        b.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                b.setBackground(new Color(60, 60, 60));
+            }
+            public void mouseExited(MouseEvent e) {
+                b.setBackground(BTN_COLOR);
+            }
+        });
+    }
+
+    // Creates shape mode button
+    private JButton createModeButton(String label, String mode, Color ind) {
+        JButton b = new JButton(label);
+        styleDarkButton(b);
+
+        // When clicked — change drawing mode
+        b.addActionListener(e -> currentMode = mode);
+        return b;
+    }
+
+    // Creates functional action button
+    private JButton createActionButton(String text, String cmd, boolean enlarge) {
+        JButton b = new JButton(text);
+        styleDarkButton(b);
+
+        b.addActionListener(e -> {
+            switch(cmd) {
+                case "LOAD" -> loadFile();
+                case "Z_IN" -> { zoomFactor *= 1.2; repaint(); }
+                case "Z_OUT" -> { zoomFactor /= 1.2; repaint(); }
+                case "COPY" -> copyToClipboard();
+            }
+        });
+        return b;
+    }
+
      
 }
