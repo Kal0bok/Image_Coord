@@ -154,6 +154,58 @@ public class HtmlHelperGodMode extends JFrame {
             }
         });
         return b;
+        
+     // ===============================
+     // CANVAS (DRAWING AREA)
+     // ===============================
+     JPanel canvas = new JPanel() {
+
+         {
+             setBackground(BG_COLOR);
+             setupDragAndDrop(this); // enable drag & drop image loading
+         }
+
+         @Override
+         protected void paintComponent(Graphics g) {
+             super.paintComponent(g);
+
+             Graphics2D g2 = (Graphics2D) g;
+
+             // Enable anti-aliasing for smooth rendering
+             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                     RenderingHints.VALUE_ANTIALIAS_ON);
+
+             // If no image loaded — show message
+             if (img == null) {
+                 g2.setColor(Color.DARK_GRAY);
+                 g2.setFont(new Font("SansSerif", Font.PLAIN, 20));
+                 g2.drawString("Load or Drop an image here",
+                         getWidth()/2 - 130,
+                         getHeight()/2);
+                 return;
+             }
+
+             // Prevent image from going outside visible area
+             constrainOffsets();
+
+             // Save original transform
+             AffineTransform old = g2.getTransform();
+
+             // Apply zoom and camera translation
+             g2.translate(offsetX, offsetY);
+             g2.scale(zoomFactor, zoomFactor);
+
+             // Draw image
+             g2.drawImage(img, 0, 0, null);
+
+             // Restore transform
+             g2.setTransform(old);
+         }
+     };
+
+     add(canvas, BorderLayout.CENTER);
+
+        
     }
 
      
