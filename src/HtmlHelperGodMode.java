@@ -307,6 +307,35 @@ private void loadFile() {
     if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
         openFile(jfc.getSelectedFile());
     }
+    
+    
+}
+private void drawShape(Graphics2D g2, ShapeData s, boolean selected) {
+    Rectangle r = s.getRect();
+    Color c = selected ? ACCENT_COLOR : (s.type.equals("OVAL") ? OVAL_BORDER : s.type.equals("RHOMBUS") ? RHOMB_BORDER : RECT_BORDER);
+    g2.setColor(c);
+    g2.setStroke(new BasicStroke((float)((selected ? 3 : 2) / zoomFactor)));
+    Shape obj;
+    if (s.type.equals("RECT")) obj = r;
+    else if (s.type.equals("OVAL")) obj = new Ellipse2D.Double(r.x, r.y, r.width, r.height);
+    else {
+        int[] xs = {r.x + r.width/2, r.x + r.width, r.x + r.width/2, r.x};
+        int[] ys = {r.y, r.y + r.height/2, r.y + r.height, r.y + r.height/2};
+        obj = new Polygon(xs, ys, 4);
+    }
+    g2.draw(obj);
+    if (selected) {
+        int hSize = (int)(10 / zoomFactor);
+        g2.setColor(Color.WHITE);
+        int[] hX = {r.x, r.x + r.width/2, r.x + r.width, r.x, r.x + r.width, r.x, r.x + r.width/2, r.x + r.width};
+        int[] hY = {r.y, r.y, r.y, r.y + r.height/2, r.y + r.height/2, r.y + r.height, r.y + r.height, r.y + r.height};
+        for (int i = 0; i < 8; i++) {
+            g2.fill(new Rectangle2D.Double(hX[i] - hSize/2.0, hY[i] - hSize/2.0, hSize, hSize));
+            g2.setColor(Color.BLACK);
+            g2.draw(new Rectangle2D.Double(hX[i] - hSize/2.0, hY[i] - hSize/2.0, hSize, hSize));
+            g2.setColor(Color.WHITE);
+        }
+    }
 }
 
 }
