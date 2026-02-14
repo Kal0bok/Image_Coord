@@ -78,5 +78,39 @@ public class HtmlHelperGodMode extends JFrame {
         getContentPane().setBackground(BG_COLOR);
 
         setLocationRelativeTo(null);
+        
+        
+     // ===============================
+     // SIDEBAR & TOP PANEL UI
+     // ===============================
+
+     // --- SIDEBAR ---
+     JPanel sidebar = new JPanel(new GridLayout(6, 1, 10, 10));
+     sidebar.setBackground(SIDEBAR_COLOR);
+     sidebar.setPreferredSize(new Dimension(180, 0));
+     sidebar.setBorder(new EmptyBorder(15, 10, 15, 10));
+
+     // Buttons for selecting shape type
+     sidebar.add(createModeButton("RECTANGLE", "RECT", RECT_BORDER));
+     sidebar.add(createModeButton("CIRCLE", "OVAL", OVAL_BORDER));
+     sidebar.add(createModeButton("RHOMBUS", "RHOMBUS", RHOMB_BORDER));
+
+     // --- TOPBAR ---
+     JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
+     topPanel.setBackground(SIDEBAR_COLOR);
+     topPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+
+     // File loading and zoom controls
+     topPanel.add(createActionButton("📂 LOAD IMAGE", "LOAD", true));
+     topPanel.add(createActionButton("🔍 +", "Z_IN", true));
+     topPanel.add(createActionButton("🔍 -", "Z_OUT", true));
+
+     add(sidebar, BorderLayout.WEST);
+     add(topPanel, BorderLayout.NORTH);
+
+        
+        
+        
     }
+     
 }
