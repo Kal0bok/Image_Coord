@@ -294,21 +294,19 @@ public class HtmlHelperGodMode extends JFrame {
             JOptionPane.showMessageDialog(this,
                     "Error loading image!");
         }
+        
+        
     }
-    private JButton createActionButton(String text, String cmd, boolean enlarge) {
-        JButton b = new JButton(text);
-        styleDarkButton(b);
-
-        b.addActionListener(e -> {
-            switch(cmd) {
-                case "LOAD" -> loadFile();
-                case "Z_IN" -> { zoomFactor *= 1.2; repaint(); }
-                case "Z_OUT" -> { zoomFactor /= 1.2; repaint(); }
-                case "COPY" -> copyToClipboard();
-            }
-        });
-
-        return b;
+    
     }
+    }
+private void loadFile() {
+    JFileChooser jfc = new JFileChooser();
+    jfc.setAcceptAllFileFilterUsed(false);
+    jfc.addChoosableFileFilter(new FileNameExtensionFilter("Images (jpg, png, gif, bmp)", "jpg", "jpeg", "png", "gif", "bmp"));
+    if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        openFile(jfc.getSelectedFile());
+    }
+}
 
 }
