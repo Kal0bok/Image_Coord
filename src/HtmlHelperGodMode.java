@@ -350,4 +350,62 @@ private void constrainOffsets() {
     else offsetY = Math.min(0, Math.max(offsetY, viewH - imgH));
 }
 
+private void initMouseLogic(JPanel p) {
+    p.addMouseWheelListener(e -> {
+        if (img == null) return;
+        if (e.getWheelRotation() < 0) zoomFactor *= 1.1;
+        else zoomFactor /= 1.1;
+        zoomFactor = Math.max(0.1, Math.min(zoomFactor, 10.0));
+        repaint();
+    });
+
+    p.addMouseListener(new MouseAdapter() {
+        public void mousePressed(MouseEvent e) {
+            lastMousePos = e.getPoint();
+            Point world = screenToWorld(e.getPoint());
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                if (selectedShape != null) {
+                    currentHandle = selectedShape.getHandleAt(world, zoomFactor);
+                    if (currentHandle != -1) return;
+                }
+                ShapeData found = null;
+                for (int i = shapes.size() - 1; i >= 0; i--) if (shapes.get(i).contains(world)) { found = shapes.get(i); break; }
+                if (found != null) {
+                    selectedShape = found;
+                    dragStartOffset = new Point(world.x - found.p1.x, world.y - found.p1.y);
+                } else { selectedShape = null; startPoint = world; }
+            }
+            p.requestFocusInWindow();
+            repaint();
+        }
+        public void mouseReleased(MouseEvent e) {
+            if (startPoint != null && endPoint != null && startPoint.distance(endPoint) > 5) {
+                shapes.add(new ShapeData(currentMode, startPoint, endPoint));
+                updateList();
+            }
+            startPoint = null; endPoint = null; currentHandle = -1;
+            repaint();
+        }
+    });
+    p.addMouseMotionListener(new MouseMotionAdapter() {
+        public void mouseDragged(MouseEvent e) {
+            Point world = screenToWorld(e.getPoint());
+            if (SwingUtilities.isRightMouseButton(e)) {
+                offsetX += (e.getX() - lastMousePos.x); offsetY += (e.getY() - lastMousePos.y);
+            } else if (SwingUtilities.isLeftMouseButton(e)) {
+                if (selectedShape != null) {
+                    if (currentHandle != -1) selectedShape.resize(currentHandle, world);
+                    else if (dragStartOffset != null) selectedShape.move(world.x - selectedShape.p1.x - dragStartOffset.x, world.y - selectedShape.p1.y - dragStartOffset.y);
+                    updateList();
+                } else endPoint = world;
+            }
+            lastMousePos = e.getPoint(); repaint();
+        }
+    });
+}
+
+private Point screenToWorld(Point p) {
+    return new Point((int)((p.x - offsetX) / zoomFactor), (int)((p.y - offsetY) / zoomFactor));
+}
+
 }
