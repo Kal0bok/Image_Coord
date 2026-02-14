@@ -428,4 +428,43 @@ private void copyToClipboard() {
     JOptionPane.showMessageDialog(this, "Copied!");
 }
 
+private void setupKeyboard() {
+    KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+        if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_DELETE) {
+            if (selectedShape != null) { shapes.remove(selectedShape); selectedShape = null; updateList(); repaint(); }
+            return true;
+        }
+        return false;
+    });
+}
+
+static class ShapeData {
+    String type, tag; Point p1, p2;
+    ShapeData(String t, Point p1, Point p2) { this.type = t; this.p1 = new Point(p1); this.p2 = new Point(p2); }
+    Rectangle getRect() { return new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y), Math.max(1, Math.abs(p1.x - p2.x)), Math.max(1, Math.abs(p1.y - p2.y))); }
+    void move(int dx, int dy) { p1.translate(dx, dy); p2.translate(dx, dy); }
+    int getHandleAt(Point p, double z) {
+        Rectangle r = getRect();
+        int s = (int)(12 / z);
+        int[] hX = {r.x, r.x + r.width/2, r.x + r.width, r.x, r.x + r.width, r.x, r.x + r.width/2, r.x + r.width};
+        int[] hY = {r.y, r.y, r.y, r.y + r.height/2, r.y + r.height/2, r.y + r.height, r.y + r.height, r.y + r.height};
+        for (int i = 0; i < 8; i++) if (new Rectangle(hX[i]-s/2, hY[i]-s/2, s, s).contains(p)) return i;
+        return -1;
+    }
+    void resize(int h, Point p) {
+        if (h==0||h==3||h==5) p1.x=p.x; if (h==2||h==4||h==7) p2.x=p.x;
+        if (h==0||h==1||h==2) p1.y=p.y; if (h==5||h==6||h==7) p2.y=p.y;
+    }
+    boolean contains(Point p) {
+        Rectangle r = getRect();
+        if (type.equals("OVAL")) return new Ellipse2D.Double(r.x, r.y, r.width, r.height).contains(p);
+        if (type.equals("RHOMBUS")) {
+            int[] xs = {r.x + r.width/2, r.x + r.width, r.x + r.width/2, r.x};
+            int[] ys = {r.y, r.y + r.height/2, r.y + r.height, r.y + r.height/2};
+            return new Polygon(xs, ys, 4).contains(p);
+        }
+        return r.contains(p);
+    }
+}
+
 }
