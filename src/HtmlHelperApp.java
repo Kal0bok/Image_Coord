@@ -1,6 +1,3 @@
-/* * Section 1: Core application window and UI components setup.
- * Handles the dark theme (God Mode) and layout positioning.
- */
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -47,5 +44,21 @@ public class HtmlHelperGodMode extends JFrame {
 
     }
     
-    private void styleDarkButton(JButton b) { /* ... */ }
+    private void styleDarkButton(JButton b) {  }
+    
+    /* * Section 2: File I/O and Viewport logic.
+     * Manages image loading, scaling (zoom), and panning (offset).
+     */
+    private void setupDragAndDrop(JPanel panel) {
+    }
+
+    private void openFile(File file) {
+    }
+
+    private void constrainOffsets() {
+    }
+
+    private Point screenToWorld(Point p) {
+        return new Point((int)((p.x - offsetX) / zoomFactor), (int)((p.y - offsetY) / zoomFactor));
+    }
 }
