@@ -158,52 +158,44 @@ public class HtmlHelperGodMode extends JFrame {
      // ===============================
      // CANVAS (DRAWING AREA)
      // ===============================
-     JPanel canvas = new JPanel() {
+        JPanel canvas = new JPanel() {
 
-         {
-             setBackground(BG_COLOR);
-             setupDragAndDrop(this); // enable drag & drop image loading
-         }
+            {
+                setBackground(BG_COLOR);
+                setupDragAndDrop(this);
+            }
 
-         @Override
-         protected void paintComponent(Graphics g) {
-             super.paintComponent(g);
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
 
-             Graphics2D g2 = (Graphics2D) g;
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
 
-             // Enable anti-aliasing for smooth rendering
-             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                     RenderingHints.VALUE_ANTIALIAS_ON);
+                if (img == null) {
+                    g2.setColor(Color.DARK_GRAY);
+                    g2.setFont(new Font("SansSerif", Font.PLAIN, 20));
+                    g2.drawString("Load or Drop an image here",
+                            getWidth()/2 - 130,
+                            getHeight()/2);
+                    return;
+                }
 
-             // If no image loaded — show message
-             if (img == null) {
-                 g2.setColor(Color.DARK_GRAY);
-                 g2.setFont(new Font("SansSerif", Font.PLAIN, 20));
-                 g2.drawString("Load or Drop an image here",
-                         getWidth()/2 - 130,
-                         getHeight()/2);
-                 return;
-             }
+                constrainOffsets();
 
-             // Prevent image from going outside visible area
-             constrainOffsets();
+                AffineTransform old = g2.getTransform();
 
-             // Save original transform
-             AffineTransform old = g2.getTransform();
+                g2.translate(offsetX, offsetY);
+                g2.scale(zoomFactor, zoomFactor);
 
-             // Apply zoom and camera translation
-             g2.translate(offsetX, offsetY);
-             g2.scale(zoomFactor, zoomFactor);
+                g2.drawImage(img, 0, 0, null);
 
-             // Draw image
-             g2.drawImage(img, 0, 0, null);
+                g2.setTransform(old);
+            }
+        };
 
-             // Restore transform
-             g2.setTransform(old);
-         }
-     };
-
-     add(canvas, BorderLayout.CENTER);
+        add(canvas, BorderLayout.CENTER);
 
     }
  // Keeps image inside visible viewport
@@ -303,6 +295,20 @@ public class HtmlHelperGodMode extends JFrame {
                     "Error loading image!");
         }
     }
+    private JButton createActionButton(String text, String cmd, boolean enlarge) {
+        JButton b = new JButton(text);
+        styleDarkButton(b);
 
+        b.addActionListener(e -> {
+            switch(cmd) {
+                case "LOAD" -> loadFile();
+                case "Z_IN" -> { zoomFactor *= 1.2; repaint(); }
+                case "Z_OUT" -> { zoomFactor /= 1.2; repaint(); }
+                case "COPY" -> copyToClipboard();
+            }
+        });
+
+        return b;
+    }
 
 }
