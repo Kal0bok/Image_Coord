@@ -6,7 +6,7 @@
 ![Status](https://img.shields.io/badge/Mode-God%20Mode-red)
 
 <p align="center">
-  <img src="src/Screen_Shot/screenn.png" alt="Modern Picker Preview" width="250">
+  <img src="src/Screen_Shot/screenn.png" alt="Modern Picker Preview" width="500">
 </p>
 
 **HtmlHelperGodMode** is a high-performance desktop utility designed for visual creation of HTML `<map>` elements. Stop calculating coordinates manually—simply drop an image, draw your shapes, and get production-ready HTML code instantly.
