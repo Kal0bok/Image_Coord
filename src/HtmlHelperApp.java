@@ -58,10 +58,7 @@ public class HtmlHelperGodMode extends JFrame {
     private Point screenToWorld(Point p) {
         return new Point((int)((p.x - offsetX) / zoomFactor), (int)((p.y - offsetY) / zoomFactor));
     }
-    
-    /* * Section 3: Geometry and Rendering.
-     * Internal class to store coordinates and logic for different area types.
-     */
+
     static class ShapeData {
         String type, tag; Point p1, p2;
         ShapeData(String t, Point p1, Point p2) { this.type = t; this.p1 = new Point(p1); this.p2 = new Point(p2); }
@@ -79,5 +76,20 @@ public class HtmlHelperGodMode extends JFrame {
     }
 
     private void drawShape(Graphics2D g2, ShapeData s, boolean selected) {
+    }
+    
+    /* * Section 4: Interaction and Export.
+     * Handling user input to modify shapes and generate the <area> tags.
+     */
+    private void updateList() {
+    }
+
+    private void copyToClipboard() {
+    }
+
+    private void setupKeyboard() {
+    }
+
+    private void initMouseLogic(JPanel p) {
     }
 }
