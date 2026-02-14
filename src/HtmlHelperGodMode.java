@@ -227,5 +227,82 @@ public class HtmlHelperGodMode extends JFrame {
             offsetY = Math.min(0, Math.max(offsetY, viewH - imgH));
     }
 
-     
+    private void setupDragAndDrop(JPanel panel) {
+
+        new DropTarget(panel, new DropTargetAdapter() {
+
+            @Override
+            public void drop(DropTargetDropEvent dtde) {
+                try {
+                    dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                    Transferable t = dtde.getTransferable();
+
+                    if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+
+                        List<File> files =
+                                (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+
+                        if (!files.isEmpty())
+                            openFile(files.get(0));
+                    }
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null,
+                            "Error processing drop!");
+                }
+            }
+        });
+    }
+ // Converts screen coordinates to image coordinates
+    private Point screenToWorld(Point p) {
+        return new Point(
+                (int)((p.x - offsetX) / zoomFactor),
+                (int)((p.y - offsetY) / zoomFactor)
+        );
+    }
+    
+ // Opens file chooser
+    private void loadFile() {
+        JFileChooser jfc = new JFileChooser();
+        jfc.setAcceptAllFileFilterUsed(false);
+        jfc.addChoosableFileFilter(
+                new FileNameExtensionFilter(
+                        "Images (jpg, png, gif, bmp)",
+                        "jpg", "jpeg", "png", "gif", "bmp"
+                )
+        );
+
+        if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            openFile(jfc.getSelectedFile());
+        }
+    }
+
+    // Loads image into memory
+    private void openFile(File file) {
+        try {
+            BufferedImage newImg = ImageIO.read(file);
+
+            if (newImg == null) {
+                JOptionPane.showMessageDialog(this,
+                        "File is not a valid image!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            img = newImg;
+
+            zoomFactor = 1.0;
+            offsetX = 0;
+            offsetY = 0;
+
+            repaint();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error loading image!");
+        }
+    }
+
+
 }
